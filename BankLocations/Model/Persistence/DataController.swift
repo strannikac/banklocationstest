@@ -37,7 +37,6 @@ class DataController {
                 fatalError(error!.localizedDescription)
             }
             
-            //self.autoSaveViewContext()
             self.configureContexts()
             completion?()
         }
@@ -47,6 +46,7 @@ class DataController {
 //MARK: remove and save data
 
 extension DataController {
+    //save context in local store
     func saveContext(forContext context: NSManagedObjectContext) {
         if context.hasChanges {
             context.performAndWait {
@@ -75,7 +75,6 @@ extension DataController {
             privateMOC.parent = self?.viewContext
             
             privateMOC.performAndWait {
-                
                 let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
                 let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
                 
@@ -87,11 +86,10 @@ extension DataController {
                 }
                 
                 self!.saveContext(forContext: privateMOC)
-                
             }
-            
-            self?.saveContext(forContext: self!.viewContext)
         }
+        
+        self.saveContext(forContext: self.viewContext)
     }
     
     //save locations data in local store by country id
