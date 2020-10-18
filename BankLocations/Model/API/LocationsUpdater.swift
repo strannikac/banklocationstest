@@ -12,7 +12,7 @@ import UIKit
 
 class LocationsUpdater {
     
-    private var dataController: DataController = (UIApplication.shared.delegate as? AppDelegate)!.dataController
+    private var dataController: DataController!
     
     private let updateTimeSeconds: Int64 = 3600
     
@@ -25,8 +25,12 @@ class LocationsUpdater {
     private var countries: [Country] = []
     
     //vars for view controller
-    private var updatingController: UpdatingDelegate? = nil
+    private var updatingController: UpdatingDelegate?
     private var activityIndicatorView: UIActivityIndicatorView = UIActivityIndicatorView()
+    
+    init(dataController: DataController!) {
+        self.dataController = dataController
+    }
     
     //MARK: updating process functions
     
@@ -53,7 +57,7 @@ class LocationsUpdater {
             self.updatingDataCount = 0
             
             //start with first country
-            ClientAPI.getLocationsByCountry(country: countries[0], completion: self.saveResponseData(country:items:error:))
+            ClientAPI.getLocationsByCountry(country: countries[self.updatingDataCount], completion: self.saveResponseData(country:items:error:))
         }
     }
     

@@ -20,7 +20,7 @@ class RegionsTableViewController: UITableViewController {
     
     private var selectedRegion: Region?
     
-    private var locationsUpdater: LocationsUpdater = LocationsUpdater()
+    private var locationsUpdater: LocationsUpdater?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,14 +31,20 @@ class RegionsTableViewController: UITableViewController {
             regions.append([])
         }
         
+        self.locationsUpdater = LocationsUpdater(dataController: self.dataController)
+        
         //update data
-        self.locationsUpdater.start(controller: self, checkTime: false)
+        if let locationsUpdater = self.locationsUpdater {
+            locationsUpdater.start(controller: self, checkTime: false)
+        }
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
-        self.locationsUpdater.start(controller: self)
+        if let locationsUpdater = self.locationsUpdater {
+            locationsUpdater.start(controller: self)
+        }
     }
     
     // MARK: Table View Sections (header of sections)
