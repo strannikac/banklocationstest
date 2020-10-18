@@ -13,7 +13,7 @@ struct Country {
     
     let id: Int
     let name: String
-    var endpoint: String
+    let endpoint: String
     
     // An array of countries
     static let list: [Country] = {
