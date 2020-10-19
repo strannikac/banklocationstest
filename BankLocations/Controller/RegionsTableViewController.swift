@@ -11,7 +11,8 @@ import UIKit
 
 class RegionsTableViewController: UITableViewController {
     
-    private var dataController: DataController = (UIApplication.shared.delegate as? AppDelegate)!.dataController
+    //core data object
+    private let dataController = DataController(modelName: "BankLocations")
     
     @IBOutlet var contentTableView: UITableView!
     private var tableSections:[String] = []
@@ -24,6 +25,8 @@ class RegionsTableViewController: UITableViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        self.dataController.load()
         
         self.countries = Country.list
         for country in self.countries {
