@@ -31,68 +31,68 @@ class LocationDetailsViewController: UIViewController {
         super.viewDidLoad()
         
         //add some things in design
-        self.setDesign()
+        setDesign()
         
         //show info of location
-        self.showInfo()
+        showInfo()
     }
     
     private func setDesign() {
         //uppercase text in title labels
-        self.typeTitleLabel.text = self.typeTitleLabel.text?.uppercased()
-        self.nameTitleLabel.text = self.nameTitleLabel.text?.uppercased()
-        self.addressTitleLabel.text = self.addressTitleLabel.text?.uppercased()
-        self.regionTitleLabel.text = self.regionTitleLabel.text?.uppercased()
-        self.availabilityTitleLabel.text = self.availabilityTitleLabel.text?.uppercased()
-        self.infoTitleLabel.text = self.infoTitleLabel.text?.uppercased()
+        typeTitleLabel.text = typeTitleLabel.text?.uppercased()
+        nameTitleLabel.text = nameTitleLabel.text?.uppercased()
+        addressTitleLabel.text = addressTitleLabel.text?.uppercased()
+        regionTitleLabel.text = regionTitleLabel.text?.uppercased()
+        availabilityTitleLabel.text = availabilityTitleLabel.text?.uppercased()
+        infoTitleLabel.text = infoTitleLabel.text?.uppercased()
     }
     
     private func showInfo() {
-        self.locationTypes = LocationType.list
-        let type = Int(self.location.type)
+        locationTypes = LocationType.list
+        let type = Int(location.type)
         
-        let name = self.location.name?.replacingOccurrences(of: "\n", with: "") ?? ""
+        let name = location.name?.replacingOccurrences(of: "\n", with: "") ?? ""
         
         if name != "" {
             self.title = name
         }
         
-        self.typeLabel.text = self.locationTypes[type].title
-        self.nameLabel.text = name
-        self.addressLabel.text = self.location.address?.replacingOccurrences(of: "\n", with: "") ?? ""
+        typeLabel.text = locationTypes[type].title
+        nameLabel.text = name
+        addressLabel.text = location.address?.replacingOccurrences(of: "\n", with: "") ?? ""
         
-        self.regionLabel.text = ""
+        regionLabel.text = ""
         if let region = location.region?.name {
-            self.regionLabel.text = region
+            regionLabel.text = region
         }
         
-        let availability = self.location.availability?.replacingOccurrences(of: "\n", with: "") ?? ""
+        let availability = location.availability?.replacingOccurrences(of: "\n", with: "") ?? ""
         
         if availability == "" {
-            self.availabilityLabel.isHidden = true
-            self.availabilityTitleLabel.isHidden = true
+            availabilityLabel.isHidden = true
+            availabilityTitleLabel.isHidden = true
         } else {
-            self.availabilityLabel.text = availability
+            availabilityLabel.text = availability
         }
         
         //only for branch
         if type == 0 {
             var infoTotal = ""
             
-            let info = self.location.info?.replacingOccurrences(of: "\n", with: "") ?? ""
+            let info = location.info?.replacingOccurrences(of: "\n", with: "") ?? ""
             
             if info != "" {
                 infoTotal += info
             }
             
-            if self.location.nocash {
+            if location.nocash {
                 if infoTotal != "" {
                     infoTotal += "\n"
                 }
                 infoTotal += StringConstants.nocashBranch.rawValue
             }
             
-            if self.location.coinStation {
+            if location.coinStation {
                 if infoTotal != "" {
                     infoTotal += "\n"
                 }
@@ -100,14 +100,14 @@ class LocationDetailsViewController: UIViewController {
             }
             
             if infoTotal == "" {
-                self.infoLabel.isHidden = true
-                self.infoTitleLabel.isHidden = true
+                infoLabel.isHidden = true
+                infoTitleLabel.isHidden = true
             } else {
-                self.infoLabel.text = infoTotal
+                infoLabel.text = infoTotal
             }
         } else {
-            self.infoLabel.isHidden = true
-            self.infoTitleLabel.isHidden = true
+            infoLabel.isHidden = true
+            infoTitleLabel.isHidden = true
         }
     }
 }

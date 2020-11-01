@@ -12,30 +12,26 @@ import Foundation
 class ClientAPI {
     
     //cookie for request
-    static let cookieForRequest = "Swedbank-Embedded=iphone-app"
+    private let cookieForRequest = "Swedbank-Embedded=iphone-app"
     
     //MARK: regions and locations from url
     
     //get data from api (url) for country
-    class func getLocationsByCountry(country: Country, completion: @escaping (_ country: Country, [LocationItem], String?) -> Void) {
-        guard let url = URL(string: country.endpoint) else {
-            DispatchQueue.main.async {
-                completion(country, [], StringConstants.errUrl.rawValue)
-            }
+    func getLocationsByCountry(country: Country, completion: @escaping (_ country: Country, [LocationItem], String?) -> Void) {
+        guard let url = URL(string: country.endpoint!) else {
+            completion(country, [], StringConstants.errUrl.rawValue)
             return
         }
         
         var request = URLRequest(url: url)
         request.httpMethod = "GET"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        request.setValue(self.cookieForRequest, forHTTPHeaderField: "Cookie")
+        request.setValue(cookieForRequest, forHTTPHeaderField: "Cookie")
         request.httpShouldHandleCookies = true
         
         let task = URLSession.shared.dataTask(with: request) { (data, response, error) in
             guard let data = data else {
-                DispatchQueue.main.async {
-                    completion(country, [], error?.localizedDescription)
-                }
+                completion(country, [], error?.localizedDescription)
                 return
             }
             
@@ -60,9 +56,7 @@ class ClientAPI {
                     }
                 }
             } catch {
-                DispatchQueue.main.async {
-                    completion(country, [], error.localizedDescription)
-                }
+                completion(country, [], error.localizedDescription)
             }
         }
         

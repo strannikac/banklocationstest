@@ -28,6 +28,7 @@ class DataController {
         backgroundContext.automaticallyMergesChangesFromParent = true
         
         backgroundContext.mergePolicy = NSMergePolicy.mergeByPropertyObjectTrump
+        //backgroundContext.mergePolicy = NSMergePolicy.overwrite
         viewContext.mergePolicy = NSMergePolicy.mergeByPropertyStoreTrump
     }
     
@@ -64,111 +65,112 @@ extension DataController {
         }
     }
     
-    //clear all tables in local store
-    func resetAllData() {
-        // get all entities and loop over them
-        let entityNames = self.persistentContainer.managedObjectModel.entities.map({ $0.name! })
-        
-        entityNames.forEach { [weak self] entityName in
-            //create private NSManagedObjectContext
-            let privateMOC = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-            privateMOC.parent = self?.viewContext
-            
-            privateMOC.performAndWait {
-                let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: entityName)
-                let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
-                
-                do {
-                    try privateMOC.execute(deleteRequest)
-                } catch let error as NSError {
-                    //error
-                    print("error in reseting data for entity: \(error.localizedDescription)")
-                }
-                
-                self!.saveContext(forContext: privateMOC)
-            }
-        }
-        
-        self.saveContext(forContext: self.viewContext)
-    }
-    
     //save locations data in local store by country id
-    func saveLocationsByCountry(country: Int, items: [String:[LocationItem]]) {
+    func saveLocationsByCountry(country: Country, items: [String:[LocationItem]]) {
         //create private NSManagedObjectContext
         let privateMOC = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        privateMOC.parent = self.viewContext
+        privateMOC.parent = backgroundContext
         
-        //by region
-        for item in items {
-            let region = Region(context: privateMOC)
-            region.countryId = Int16(country)
-            region.name = item.key
+        if let countryName = country.name {
+            //select country in current context
+            let fetchRequest: NSFetchRequest<Country> = Country.fetchRequest()
+            let predicate = NSPredicate(format: "name == %@", countryName)
+            fetchRequest.predicate = predicate
+        
+            let res = try? privateMOC.fetch(fetchRequest)
             
-            //by location in this region
-            for locationItem in item.value {
-                let location = Location(context: privateMOC)
+            if let res = res {
+                let currentCountry = res[0]
                 
-                location.latitude = locationItem.lat
-                location.longitude = locationItem.lon
-                location.name = locationItem.n
-                location.address = locationItem.a
-                location.type = Int16(locationItem.t)
-                location.availability = locationItem.av ?? ""
-                location.info = locationItem.i ?? ""
-                location.nocash = locationItem.ncash ?? false
-                location.coinStation = locationItem.cs ?? false
+                //clear regions for this country
+                let deletedPredicate = NSPredicate(format: "ANY country.name = %@", currentCountry.name!)
                 
-                location.region = region
-            }
-            
-            privateMOC.performAndWait {
-                self.saveContext(forContext: privateMOC)
+                let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Region")
+                deleteFetch.predicate = deletedPredicate
+                let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
+
+                do {
+                    try privateMOC.execute(deleteRequest)
+                    saveContext(forContext: privateMOC)
+                } catch let error as NSError {
+                    //error
+                    print("error in removeing data for country: \(error.localizedDescription)")
+                }
+        
+                //by region
+                for item in items {
+                    let region = Region(context: privateMOC)
+                    region.name = item.key
+                    region.country = currentCountry
+                    
+                    //by location in this region
+                    for locationItem in item.value {
+                        let location = Location(context: privateMOC)
+                        
+                        location.latitude = locationItem.latitude
+                        location.longitude = locationItem.longitude
+                        location.name = locationItem.name
+                        location.address = locationItem.address
+                        location.type = locationItem.type
+                        location.availability = locationItem.availability ?? ""
+                        location.info = locationItem.info ?? ""
+                        location.nocash = locationItem.nocash ?? false
+                        location.coinStation = locationItem.coinStation ?? false
+                        
+                        location.region = region
+                    }
+                    
+                    privateMOC.performAndWait {
+                        saveContext(forContext: privateMOC)
+                    }
+                }
+                
+                //sava all regions and locations
+                saveContext(forContext: backgroundContext)
             }
         }
-        
-        //sava all regions and locations
-        self.saveContext(forContext: self.viewContext)
     }
 }
 
-//MARK: select data
+//MARK: select data and set countries (if countries don't exist)
 
 extension DataController {
-    //get regions by country id and sort by name
-    func getRegionsByCountry(country: Int, sortBy: String = "name", isAsc: Bool = true) -> [Region] {
-        let fetchRequest: NSFetchRequest<Region> = Region.fetchRequest()
-        let predicate = NSPredicate(format: "countryId == %i", Int16(country))
-        fetchRequest.predicate = predicate
-        let sortDescriptor = NSSortDescriptor(key: sortBy, ascending: isAsc)
+    //get countries
+    func getCountries() -> [Country] {
+        let fetchRequest: NSFetchRequest<Country> = Country.fetchRequest()
+        let sortDescriptor = NSSortDescriptor(key: "name", ascending: true)
         fetchRequest.sortDescriptors = [sortDescriptor]
     
         do {
-            let res = try self.viewContext.fetch(fetchRequest)
+            let res = try viewContext.fetch(fetchRequest)
             if res.count > 0 {
                 return res
             }
         } catch {
-            print("error selecting regions from local: \(country)")
+            print("error selecting countries from local")
         }
         
         return []
     }
     
-    //get one region by name and country id
-    func getRegionByNameAndCountry(name: String, country: Int16) -> Region? {
-        let fetchRequest: NSFetchRequest<Region> = Region.fetchRequest()
-        let predicate = NSPredicate(format: "countryId == %i AND name == %@", country, name)
-        fetchRequest.predicate = predicate
-    
-        do {
-            let res = try self.viewContext.fetch(fetchRequest)
-            if res.count > 0 {
-                return res[0]
+    //set countries
+    func setCountries() {
+        let countries = CountryConfig.list
+        
+        let privateMOC = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        privateMOC.parent = backgroundContext
+        
+        for item in countries {
+            let country = Country(context: privateMOC)
+            country.name = item.name
+            country.endpoint = item.endpoint
+            
+            privateMOC.performAndWait {
+                saveContext(forContext: privateMOC)
             }
-        } catch {
-            print("error selecting region from local: \(name)")
         }
         
-        return nil
+        //sava all regions and locations
+        saveContext(forContext: backgroundContext)
     }
 }

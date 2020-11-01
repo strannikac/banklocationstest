@@ -9,6 +9,6 @@ import UIKit
 
 //MARK: protocol for updating data in view controller
 
-protocol UpdatingDelegate: UIViewController {
+protocol UpdatingDelegate: UITableViewController {
     func didUpdate()
 }

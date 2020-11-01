@@ -18,17 +18,17 @@
 		403B6F162531D954007F298C /* BankLocations.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 403B6F142531D954007F298C /* BankLocations.xcdatamodeld */; };
 		403B6F262531E95C007F298C /* DataController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403B6F252531E95C007F298C /* DataController.swift */; };
 		403B6F2C2531EA3A007F298C /* ClientAPI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403B6F2B2531EA3A007F298C /* ClientAPI.swift */; };
-		403B6F322533560A007F298C /* Country.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403B6F3125335609007F298C /* Country.swift */; };
+		403B6F322533560A007F298C /* CountryConfig.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403B6F3125335609007F298C /* CountryConfig.swift */; };
 		403B6F3A25335A25007F298C /* LocationType.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403B6F3925335A25007F298C /* LocationType.swift */; };
 		403B6F43253363C9007F298C /* LocationItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403B6F42253363C9007F298C /* LocationItem.swift */; };
 		403B6F54253372FC007F298C /* LocationsUpdater.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403B6F53253372FB007F298C /* LocationsUpdater.swift */; };
 		403B6F5C25383A3C007F298C /* StringConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403B6F5B25383A3B007F298C /* StringConstants.swift */; };
 		403B6F6125383C69007F298C /* AlertView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403B6F6025383C69007F298C /* AlertView.swift */; };
 		403B6F6725384107007F298C /* UpdatingDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403B6F6625384107007F298C /* UpdatingDelegate.swift */; };
-		403B6F7225389C8A007F298C /* ClientHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 403B6F7125389C8A007F298C /* ClientHelper.swift */; };
 		40A0D8402539557C004252CA /* LocationsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A0D83F2539557C004252CA /* LocationsTableViewController.swift */; };
 		40A0D8452539571A004252CA /* LocationDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A0D8442539571A004252CA /* LocationDetailsViewController.swift */; };
 		40A0D84A25397524004252CA /* LocationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40A0D84925397524004252CA /* LocationTableViewCell.swift */; };
+		40B36E30254DB2940047143B /* ActivityIndicatorHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 40B36E2F254DB2940047143B /* ActivityIndicatorHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,17 +66,17 @@
 		403B6F152531D954007F298C /* BankLocations.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = BankLocations.xcdatamodel; sourceTree = "<group>"; };
 		403B6F252531E95C007F298C /* DataController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataController.swift; sourceTree = "<group>"; };
 		403B6F2B2531EA3A007F298C /* ClientAPI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientAPI.swift; sourceTree = "<group>"; };
-		403B6F3125335609007F298C /* Country.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Country.swift; sourceTree = "<group>"; };
+		403B6F3125335609007F298C /* CountryConfig.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CountryConfig.swift; sourceTree = "<group>"; };
 		403B6F3925335A25007F298C /* LocationType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationType.swift; sourceTree = "<group>"; };
 		403B6F42253363C9007F298C /* LocationItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationItem.swift; sourceTree = "<group>"; };
 		403B6F53253372FB007F298C /* LocationsUpdater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsUpdater.swift; sourceTree = "<group>"; };
 		403B6F5B25383A3B007F298C /* StringConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringConstants.swift; sourceTree = "<group>"; };
 		403B6F6025383C69007F298C /* AlertView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AlertView.swift; sourceTree = "<group>"; };
 		403B6F6625384107007F298C /* UpdatingDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdatingDelegate.swift; sourceTree = "<group>"; };
-		403B6F7125389C8A007F298C /* ClientHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClientHelper.swift; sourceTree = "<group>"; };
 		40A0D83F2539557C004252CA /* LocationsTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationsTableViewController.swift; sourceTree = "<group>"; };
 		40A0D8442539571A004252CA /* LocationDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationDetailsViewController.swift; sourceTree = "<group>"; };
 		40A0D84925397524004252CA /* LocationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationTableViewCell.swift; sourceTree = "<group>"; };
+		40B36E2F254DB2940047143B /* ActivityIndicatorHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActivityIndicatorHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -190,9 +190,8 @@
 			children = (
 				403B6F41253363B2007F298C /* Responses */,
 				403B6F2B2531EA3A007F298C /* ClientAPI.swift */,
-				403B6F3125335609007F298C /* Country.swift */,
+				403B6F3125335609007F298C /* CountryConfig.swift */,
 				403B6F3925335A25007F298C /* LocationType.swift */,
-				403B6F53253372FB007F298C /* LocationsUpdater.swift */,
 			);
 			path = API;
 			sourceTree = "<group>";
@@ -203,6 +202,7 @@
 				403B6EDA25306E81007F298C /* RegionsTableViewController.swift */,
 				40A0D83F2539557C004252CA /* LocationsTableViewController.swift */,
 				40A0D8442539571A004252CA /* LocationDetailsViewController.swift */,
+				403B6F53253372FB007F298C /* LocationsUpdater.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -220,8 +220,8 @@
 			children = (
 				403B6F6525383FEE007F298C /* Protocols */,
 				403B6F6025383C69007F298C /* AlertView.swift */,
-				403B6F7125389C8A007F298C /* ClientHelper.swift */,
 				40A0D84925397524004252CA /* LocationTableViewCell.swift */,
+				40B36E2F254DB2940047143B /* ActivityIndicatorHelper.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -374,12 +374,12 @@
 				403B6F6125383C69007F298C /* AlertView.swift in Sources */,
 				403B6F43253363C9007F298C /* LocationItem.swift in Sources */,
 				403B6ED725306E81007F298C /* AppDelegate.swift in Sources */,
+				40B36E30254DB2940047143B /* ActivityIndicatorHelper.swift in Sources */,
 				403B6F2C2531EA3A007F298C /* ClientAPI.swift in Sources */,
-				403B6F7225389C8A007F298C /* ClientHelper.swift in Sources */,
 				40A0D8452539571A004252CA /* LocationDetailsViewController.swift in Sources */,
 				403B6F162531D954007F298C /* BankLocations.xcdatamodeld in Sources */,
 				40A0D84A25397524004252CA /* LocationTableViewCell.swift in Sources */,
-				403B6F322533560A007F298C /* Country.swift in Sources */,
+				403B6F322533560A007F298C /* CountryConfig.swift in Sources */,
 				403B6ED925306E81007F298C /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
