@@ -15,24 +15,31 @@ class RegionsTableViewController: UITableViewController {
     private let dataController = DataController(modelName: "BankLocations")
     
     @IBOutlet var contentTableView: UITableView!
-    private var countries:[Country] = []
+    private var countries: [Country] = []
+    private var endpoints: [Endpoint] = []
     
     private var selectedRegion: Region?
     
-    private lazy var locationsUpdater: LocationsUpdater = {
-        return LocationsUpdater(dataController: self.dataController, countries: Endpoint.list)
-    }()
+    private var locationsUpdater: LocationsUpdater?
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         dataController.load()
+        endpoints = Endpoint.list
         
         //remove wrong countries
-        dataController.updateCountries(countries: Endpoint.list)
+        dataController.updateCountries(countries: endpoints)
         
         //update data
-        locationsUpdater.startUpdate(controllerDelegate: self, checkTime: false)
+        locationsUpdater = LocationsUpdater(dataController: self.dataController, countries: endpoints)
+        updateData(checkTime: false)
+    }
+    
+    func updateData(checkTime: Bool = true) {
+        if let updater = locationsUpdater {
+            updater.startUpdate(controllerDelegate: self, checkTime: checkTime)
+        }
     }
     
     // MARK: Table View Sections (header of sections)
@@ -94,7 +101,7 @@ class RegionsTableViewController: UITableViewController {
     //MARK: button for update locations
     
     @IBAction func updateLocations(_ sender: Any) {
-        locationsUpdater.startUpdate(controllerDelegate: self)
+        updateData()
     }
     
 }
