@@ -66,69 +66,70 @@ extension DataController {
     }
     
     //save locations data in local store by country id
-    func saveLocationsByCountry(country: Country, items: [String:[LocationItem]]) {
+    func saveLocationsByCountry(country: Endpoint, items: [String:[LocationItem]]) {
         //create private NSManagedObjectContext
         let privateMOC = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
         privateMOC.parent = backgroundContext
         
-        if let countryName = country.name {
-            //select country in current context
-            let fetchRequest: NSFetchRequest<Country> = Country.fetchRequest()
-            let predicate = NSPredicate(format: "name == %@", countryName)
-            fetchRequest.predicate = predicate
+        //select country in current context
+        let fetchRequest: NSFetchRequest<Country> = Country.fetchRequest()
+        let predicate = NSPredicate(format: "name == %@", country.name)
+        fetchRequest.predicate = predicate
+    
+        let res = try? privateMOC.fetch(fetchRequest)
+        var currentCountry: Country = Country(context: privateMOC)
         
-            let res = try? privateMOC.fetch(fetchRequest)
+        if let res = res, res.count > 0 {
+            currentCountry = res[0]
             
-            if let res = res {
-                let currentCountry = res[0]
-                
-                //clear regions for this country
-                let deletedPredicate = NSPredicate(format: "ANY country.name = %@", currentCountry.name!)
-                
-                let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Region")
-                deleteFetch.predicate = deletedPredicate
-                let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
+            //clear regions for this country
+            let deletedPredicate = NSPredicate(format: "ANY country.name = %@", currentCountry.name!)
+            
+            let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Region")
+            deleteFetch.predicate = deletedPredicate
+            let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
 
-                do {
-                    try privateMOC.execute(deleteRequest)
-                    saveContext(forContext: privateMOC)
-                } catch let error as NSError {
-                    //error
-                    print("error in removeing data for country: \(error.localizedDescription)")
-                }
-        
-                //by region
-                for item in items {
-                    let region = Region(context: privateMOC)
-                    region.name = item.key
-                    region.country = currentCountry
-                    
-                    //by location in this region
-                    for locationItem in item.value {
-                        let location = Location(context: privateMOC)
-                        
-                        location.latitude = locationItem.latitude
-                        location.longitude = locationItem.longitude
-                        location.name = locationItem.name
-                        location.address = locationItem.address
-                        location.type = locationItem.type
-                        location.availability = locationItem.availability ?? ""
-                        location.info = locationItem.info ?? ""
-                        location.nocash = locationItem.nocash ?? false
-                        location.coinStation = locationItem.coinStation ?? false
-                        
-                        location.region = region
-                    }
-                    
-                    privateMOC.performAndWait {
-                        saveContext(forContext: privateMOC)
-                    }
-                }
+            do {
+                try privateMOC.execute(deleteRequest)
+                saveContext(forContext: privateMOC)
+            } catch let error as NSError {
+                //error
+                print("error in removeing data for country: \(error.localizedDescription)")
+            }
+        } else {
+            currentCountry.name = country.name
+        }
                 
-                //sava all regions and locations
-                saveContext(forContext: backgroundContext)
+        //by region
+        for item in items {
+            let region = Region(context: privateMOC)
+            region.name = item.key
+            region.country = currentCountry
+            
+            //by location in this region
+            for locationItem in item.value {
+                let location = Location(context: privateMOC)
+                
+                location.latitude = locationItem.latitude
+                location.longitude = locationItem.longitude
+                location.name = locationItem.name
+                location.address = locationItem.address
+                location.type = locationItem.type
+                location.availability = locationItem.availability ?? ""
+                location.info = locationItem.info ?? ""
+                location.nocash = locationItem.nocash ?? false
+                location.coinStation = locationItem.coinStation ?? false
+                
+                location.region = region
+            }
+            
+            privateMOC.performAndWait {
+                saveContext(forContext: privateMOC)
             }
         }
+        
+        //sava all regions and locations
+        saveContext(forContext: backgroundContext)
     }
 }
 
@@ -153,24 +154,26 @@ extension DataController {
         return []
     }
     
-    //set countries
-    func setCountries() {
-        let countries = CountryConfig.list
-        
-        let privateMOC = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        privateMOC.parent = backgroundContext
+    //update countries
+    func updateCountries(countries: [Endpoint]) {
+        var countryNames: [String] = []
         
         for item in countries {
-            let country = Country(context: privateMOC)
-            country.name = item.name
-            country.endpoint = item.endpoint
-            
-            privateMOC.performAndWait {
-                saveContext(forContext: privateMOC)
-            }
+            countryNames.append(item.name)
         }
         
-        //sava all regions and locations
-        saveContext(forContext: backgroundContext)
+        let deletedPredicate = NSPredicate(format: "NOT (name IN %@)", countryNames)
+        
+        let deleteFetch = NSFetchRequest<NSFetchRequestResult>(entityName: "Country")
+        deleteFetch.predicate = deletedPredicate
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: deleteFetch)
+
+        do {
+            try backgroundContext.execute(deleteRequest)
+            saveContext(forContext: backgroundContext)
+        } catch let error as NSError {
+            //error
+            print("error in removeing data for country: \(error.localizedDescription)")
+        }
     }
 }

@@ -31,37 +31,4 @@ struct LocationItem: Codable {
         case nocash = "ncash"
         case coinStation = "cs"
     }
-    
-    static func transform(from array: [AnyObject]) -> [LocationItem] {
-        var locations: [LocationItem] = []
-        
-        let count = array.count
-        
-        for i in 0..<count {
-            if let latitude = array[i]["lat"] as? Double,
-               let longitude = array[i]["lon"] as? Double,
-               let type = array[i]["t"] as? Int16,
-               let name = array[i]["n"] as? String,
-               let address = array[i]["a"] as? String,
-               let regionName = array[i]["r"] as? String
-            {
-                let item = LocationItem(
-                    latitude: latitude,
-                    longitude: longitude,
-                    type: type,
-                    name: name,
-                    address: address,
-                    regionName: regionName,
-                    availability: array[i]["av"] as? String,
-                    info: array[i]["i"] as? String,
-                    nocash: array[i]["ncash"] as? Int == 1 ? true : false,
-                    coinStation: array[i]["cs"] as? Int == 1 ? true : false
-                )
-                
-                locations.append(item)
-            }
-        }
-        
-        return locations
-    }
 }

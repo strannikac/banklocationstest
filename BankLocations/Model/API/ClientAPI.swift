@@ -17,8 +17,8 @@ class ClientAPI {
     //MARK: regions and locations from url
     
     //get data from api (url) for country
-    func getLocationsByCountry(country: Country, completion: @escaping (_ country: Country, [LocationItem], String?) -> Void) {
-        guard let url = URL(string: country.endpoint!) else {
+    func getLocationsByCountry(country: Endpoint, completion: @escaping (_ country: Endpoint, [LocationItem], String?) -> Void) {
+        guard let url = URL(string: country.url) else {
             completion(country, [], StringConstants.errUrl.rawValue)
             return
         }
@@ -48,7 +48,14 @@ class ClientAPI {
                     let dictionaryObj = try JSONSerialization.jsonObject(with: data, options: []) as? [AnyObject]
                     
                     if let dictionaryObj = dictionaryObj {
-                        let items: [LocationItem] = LocationItem.transform(from: dictionaryObj)
+                        var items: [LocationItem] = []
+                        let count = dictionaryObj.count
+                        
+                        for i in 0..<count {
+                            if let jsonData = try? JSONSerialization.data(withJSONObject: dictionaryObj[i], options: .prettyPrinted), let item = try? decoder.decode(LocationItem.self, from: jsonData) {
+                                items.append(item)
+                            }
+                        }
                         
                         completion(country, items, nil)
                     } else {

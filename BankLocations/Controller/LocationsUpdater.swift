@@ -21,7 +21,7 @@ class LocationsUpdater {
     private var updatingDataTotal = 0
     private var checkUpdatingTime = true
     
-    private var countries: [Country] = []
+    private var countries: [Endpoint] = []
     
     //vars for view controller
     private weak var updatingController: UpdatingDelegate?
@@ -31,7 +31,7 @@ class LocationsUpdater {
     
     private var error: String = ""
     
-    init(dataController: DataController, countries: [Country]) {
+    init(dataController: DataController, countries: [Endpoint]) {
         self.dataController = dataController
         clientAPI = ClientAPI()
         self.countries = countries
@@ -88,7 +88,7 @@ class LocationsUpdater {
     }
     
     //save response data in local store
-    private func saveResponseData(country: Country, items: [LocationItem], error: String?) {
+    private func saveResponseData(country: Endpoint, items: [LocationItem], error: String?) {
         if let error = error {
             //if get error, save error
             self.error += error

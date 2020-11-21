@@ -19,23 +19,20 @@ class RegionsTableViewController: UITableViewController {
     
     private var selectedRegion: Region?
     
-    private var locationsUpdater: LocationsUpdater?
+    private lazy var locationsUpdater: LocationsUpdater = {
+        return LocationsUpdater(dataController: self.dataController, countries: Endpoint.list)
+    }()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         dataController.load()
         
-        countries = dataController.getCountries()
-        if countries.count < 1 {
-            dataController.setCountries()
-            countries = dataController.getCountries()
-        }
-        
-        locationsUpdater = LocationsUpdater(dataController: self.dataController, countries: countries)
+        //remove wrong countries
+        dataController.updateCountries(countries: Endpoint.list)
         
         //update data
-        locationsUpdater!.startUpdate(controllerDelegate: self, checkTime: false)
+        locationsUpdater.startUpdate(controllerDelegate: self, checkTime: false)
     }
     
     // MARK: Table View Sections (header of sections)
@@ -97,7 +94,7 @@ class RegionsTableViewController: UITableViewController {
     //MARK: button for update locations
     
     @IBAction func updateLocations(_ sender: Any) {
-        locationsUpdater!.startUpdate(controllerDelegate: self)
+        locationsUpdater.startUpdate(controllerDelegate: self)
     }
     
 }
